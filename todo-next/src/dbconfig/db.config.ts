@@ -1,13 +1,13 @@
 import mongoose from 'mongoose';
 
 async function connect() {
-  const options = {
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
-    serverSelectionTimeoutMS: 60000, // 60 seconds
-  };
+  // const options = {
+  //   useNewUrlParser: true,
+  //   useUnifiedTopology: true,
+  //   serverSelectionTimeoutMS: 60000, // 60 seconds
+  // };
   try {
-    mongoose.connect(process.env.MONGO_URI!, options);
+    mongoose.connect(process.env.MONGO_URI!);
     const connection = mongoose.connection;
 
     connection.on('error', (error) => {

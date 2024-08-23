@@ -2,7 +2,7 @@
 
 import axios from 'axios';
 import { useParams } from 'next/navigation';
-import { ChangeEvent, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 
 async function getAllTodos(id: string) {
   try {
@@ -19,11 +19,18 @@ interface Todos {
   isCompleted: boolean;
   update: boolean;
 }
+interface UpdateObject {
+  id: string;
+  updateInput: boolean;
+}
 export default function TodosFN() {
   // const [inputShow, setInputShow] = useState<boolean>(false);
   const [inputValue, setInputValue] = useState<string>('');
   const [todos, setAllTodos] = useState<Todos[]>([]);
-
+  const [updateObject, setUpdate] = useState<UpdateObject>({
+    id: '',
+    updateInput: false,
+  });
   const params = useParams();
 
   console.log(params);
@@ -34,13 +41,16 @@ export default function TodosFN() {
     newTodos[index].isCompleted = !newTodos[index].isCompleted;
     let isCOmpleted = todos[index].isCompleted;
     setAllTodos(newTodos);
-    await axios.post('/api/todos/' + id, {
+    await axios.patch('/api/todos/' + id, {
       todo: inputValue,
       isCompleted: isCOmpleted,
     });
     return;
   };
   const addTodo = async (): Promise<void> => {
+    if (!inputValue) {
+      return;
+    }
     setAllTodos([
       ...todos,
       {
@@ -57,33 +67,43 @@ export default function TodosFN() {
     setAllTodos(getTodos);
     return;
   };
-  const ShowInputBox = (index: number) => {
+  const ShowInputBox = (index: number, todo: string) => {
+    let id = todos[index]._id;
+    setInputValue(todo);
+
+    setUpdate({ ...updateObject, id, updateInput: true });
+
     todos[index].update = !todos[index].update;
     setAllTodos([...todos]);
-  };
-  const updateTodo = async (id: string, index: number): Promise<void> => {
-    let isCOmpleted = todos[index].isCompleted;
-    todos[index].todo = inputValue;
-    await axios.post('/api/todos/' + id, {
-      todo: inputValue,
-      isCompleted: isCOmpleted,
-    });
   };
 
   const deleteTodo = async (index: number): Promise<void> => {
     let id = todos[index]._id;
-    setAllTodos(todos.splice(index, 1));
+    let x = todos.filter((ele, i) => {
+      return i !== index;
+    });
+    console.log('Is An Array', x);
+
+    setAllTodos([...x]);
     await axios.delete('/api/todos/' + id);
   };
-  const updateTodoText = (e: ChangeEvent<HTMLInputElement>, index: number) => {
-    console.log(index, inputValue);
-    let singleTodo = todos[index];
-    // setInputValue(e.target.value);
-    // setAllTodos([...todos, { ...singleTodo, todo: e.target.value }]);
-    singleTodo.todo = e.target.value;
-    setAllTodos(todos);
-    console.log(singleTodo);
-    // (e) => setInputValue(e.target.value);
+  const updateTodoText = () => {
+    setUpdate({
+      id: '',
+      updateInput: false,
+    });
+
+    let arr = todos.map((ele, indx) => {
+      if (todos[indx]._id == updateObject.id) {
+        return {
+          ...ele,
+          todo: inputValue,
+        };
+      }
+      return ele;
+    });
+    setAllTodos(arr);
+    setInputValue('');
   };
   useEffect(() => {
     const AsynCall = async (): Promise<void> => {
@@ -107,51 +127,38 @@ export default function TodosFN() {
               className="flex-grow p-2 border border-gray-300 rounded-l-md focus:outline-none focus:ring-2 focus:ring-blue-500"
               placeholder="Add a new todo..."
             />
-            <button
-              onClick={addTodo}
-              className="bg-blue-500 text-white p-2 rounded-r-md hover:bg-blue-600 focus:outline-none"
-            >
-              Add
-            </button>
+            {updateObject.updateInput ? (
+              <button
+                onClick={updateTodoText}
+                className="bg-blue-500 text-white p-2 rounded-r-md hover:bg-blue-600 focus:outline-none"
+              >
+                Update
+              </button>
+            ) : (
+              <button
+                onClick={addTodo}
+                className="bg-blue-500 text-white p-2 rounded-r-md hover:bg-blue-600 focus:outline-none"
+              >
+                Add
+              </button>
+            )}
           </div>
 
           {/* Todo List */}
           <ul>
             {todos.map(({ _id, todo, isCompleted, update }, index) => (
               <div className="flex justify-between mt-5" key={index}>
-                {!update ? (
-                  <li
-                    key={index}
-                    className="flex items-center justify-between bg-gray-50 p-3 rounded-md mb-2  overflow-scroll"
-                    onClick={() => ShowInputBox(index)}
+                <li
+                  key={index}
+                  className="flex items-center justify-between bg-gray-50 p-3 rounded-md mb-2  overflow-scroll"
+                  onClick={() => ShowInputBox(index, todo)}
+                >
+                  <span
+                    className={isCompleted ? 'line-through text-gray-400' : ''}
                   >
-                    <span
-                      className={
-                        isCompleted ? 'line-through text-gray-400' : ''
-                      }
-                    >
-                      {todo}
-                    </span>
-                  </li>
-                ) : (
-                  <div className="flex justify-between">
-                    <input
-                      type="text"
-                      value={todo}
-                      onChange={(e: ChangeEvent<HTMLInputElement>) =>
-                        updateTodoText(e, index)
-                      }
-                      className="flex-grow p-2 border border-gray-300 rounded-l-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                      placeholder="Add a new todo..."
-                    />
-                    <button
-                      className={`p-1 ml-3 text-sm rounded-md focus:outline-none: bg-gray-200`}
-                      onClick={() => updateTodo(_id, index)}
-                    >
-                      Update
-                    </button>
-                  </div>
-                )}
+                    {todo}
+                  </span>
+                </li>
 
                 <div className="flex justify-between  w-16">
                   <div>
@@ -176,4 +183,24 @@ export default function TodosFN() {
       {params.slug}
     </div>
   );
+}
+
+// <div className="flex justify-between">
+{
+  /* <input
+type="text"
+value={todo}
+onChange={(e: ChangeEvent<HTMLInputElement>) =>
+  updateTodoText(e, index)
+}
+className="flex-grow p-2 border border-gray-300 rounded-l-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+placeholder="Add a new todo..."
+/>
+<button
+className={`p-1 ml-3 text-sm rounded-md focus:outline-none: bg-gray-200`}
+onClick={() => updateTodo(_id, index)}
+>
+Update
+</button>
+</div> */
 }

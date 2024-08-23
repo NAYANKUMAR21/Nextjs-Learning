@@ -33,12 +33,13 @@ export async function PATCH(request: NextRequest): Promise<NextResponse> {
 
     await todoModel.findByIdAndUpdate(
       { _id: id },
-      { todo, isCompleted },
+      { isCompleted },
       { new: true, runValidators: true }
     );
+    console.log('Updated completed ');
     return NextResponse.json(
       { message: 'Todo updated successfully...!' },
-      { status: 500 }
+      { status: 200 }
     );
   } catch (er: unknown) {
     if (er instanceof Error) {

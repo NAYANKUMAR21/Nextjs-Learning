@@ -33,35 +33,65 @@ function Signup() {
   };
 
   return (
-    <div className="text-black">
-      <form onSubmit={handleSubmit}>
-        <div>
-          <label htmlFor="username" className="text-white">
-            Username
-          </label>
-          <input type="text" id="username" onChange={handleChange} />
-        </div>
-        <div>
-          <label htmlFor="email" className="text-white">
-            Email
-          </label>
-          <input type="email" id="email" onChange={handleChange} />
-        </div>
-        <div className="text-black">
-          <label htmlFor="password" className="text-white">
-            Password
-          </label>
-          <input
-            type="password"
-            id="password"
-            onChange={handleChange}
-            className="text-black"
-          />
-        </div>
-        <button type="submit" className="text-white">
-          Sign up
-        </button>
-      </form>
+    <div
+      className="min-h-screen flex items-center justify-center bg-cover bg-center"
+      style={{
+        backgroundImage:
+          "url('https://images5.alphacoders.com/711/711093.jpg')",
+      }}
+    >
+      <div className="bg-white p-8 rounded-lg shadow-lg max-w-sm w-full">
+        <h2 className="text-2xl font-bold text-center mb-6 text-gray-800">
+          Create Your Account
+        </h2>
+        <form onSubmit={handleSubmit} className="space-y-4">
+          <div>
+            <label htmlFor="username" className="block text-gray-700 mb-1">
+              Username
+            </label>
+            <input
+              type="text"
+              id="username"
+              onChange={handleChange}
+              name="username"
+              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+              required
+            />
+          </div>
+          <div>
+            <label htmlFor="email" className="block text-gray-700 mb-1">
+              Email
+            </label>
+            <input
+              type="email"
+              id="email"
+              onChange={handleChange}
+              name="email"
+              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+              required
+            />
+          </div>
+          <div>
+            <label htmlFor="password" className="block text-gray-700 mb-1">
+              Password
+            </label>
+            <input
+              type="password"
+              id="password"
+              onChange={handleChange}
+              name="password"
+              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+              required
+            />
+          </div>
+          <button
+            type="submit"
+            className="w-full bg-zinc-800 text-white py-2 rounded-lg hover:bg-blue-600 transition-colors"
+          >
+            Sign Up
+          </button>
+        </form>
+      </div>
     </div>
   );
 }
