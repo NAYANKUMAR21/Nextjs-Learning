@@ -27,9 +27,13 @@ function Signup() {
 
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     // axios
-    e.preventDefault();
-    await axios.post('/api/users/signup', { ...Creds });
-    router.push('/login');
+    try {
+      e.preventDefault();
+      await axios.post('/api/user/signup', { ...Creds });
+      router.push('/login');
+    } catch (er: any) {
+      return console.log(er.message);
+    }
   };
 
   return (
@@ -54,7 +58,7 @@ function Signup() {
               id="username"
               onChange={handleChange}
               name="username"
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="text-black w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
               required
             />
           </div>
@@ -67,7 +71,7 @@ function Signup() {
               id="email"
               onChange={handleChange}
               name="email"
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="text-black w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
               required
             />
           </div>
@@ -80,7 +84,7 @@ function Signup() {
               id="password"
               onChange={handleChange}
               name="password"
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="text-black w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
               required
             />
           </div>
