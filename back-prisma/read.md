@@ -142,9 +142,9 @@ npx eslint --init
 npm install --save-dev prettier eslint-config-prettier eslint-plugin-prettier
 ```
 
-With this setup, you're ready to develop a TypeScript-based backend application.
+
 
 ```
 
-This markdown format will keep the structure clear and easy to follow for anyone setting up a TypeScript backend application with Node.js.
+Thank you.
 ```
