@@ -29,6 +29,19 @@ export async function PATCH(request: NextRequest): Promise<NextResponse> {
     const id: string | undefined = request.nextUrl.pathname.split('/').pop();
     const { todo, isCompleted }: { todo: string; isCompleted: boolean } =
       await request.json();
+
+    if (todo) {
+      await todoModel.findByIdAndUpdate(
+        { _id: id },
+        {
+          todo,
+        }
+      );
+      return NextResponse.json(
+        { message: 'Todo text updated successfully...!' },
+        { status: 200 }
+      );
+    }
     console.log(id, todo, isCompleted);
 
     await todoModel.findByIdAndUpdate(
@@ -38,7 +51,7 @@ export async function PATCH(request: NextRequest): Promise<NextResponse> {
     );
     console.log('Updated completed ');
     return NextResponse.json(
-      { message: 'Todo updated successfully...!' },
+      { message: 'Todo is Completed updated successfully...!' },
       { status: 200 }
     );
   } catch (er: unknown) {

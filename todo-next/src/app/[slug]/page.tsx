@@ -87,20 +87,25 @@ export default function TodosFN() {
     setAllTodos([...x]);
     await axios.delete('/api/todos/' + id);
   };
-  const updateTodoText = () => {
-    setUpdate({
-      id: '',
-      updateInput: false,
-    });
-
+  const updateTodoText = async () => {
+    let isCOmpleted = false;
     let arr = todos.map((ele, indx) => {
-      if (todos[indx]._id == updateObject.id) {
+      if (ele._id == updateObject.id) {
+        isCOmpleted = ele.isCompleted;
         return {
           ...ele,
           todo: inputValue,
         };
       }
       return ele;
+    });
+    await axios.patch('/api/todos/' + updateObject.id, {
+      todo: inputValue,
+      isCompleted: isCOmpleted,
+    });
+    setUpdate({
+      id: '',
+      updateInput: false,
     });
     setAllTodos(arr);
     setInputValue('');
@@ -113,7 +118,7 @@ export default function TodosFN() {
     AsynCall();
   }, []);
   return (
-    <div className="text-black">
+    <div className="text-black taubg-orange-600">
       <div className="min-h-screen bg-gray-100 flex items-center justify-center">
         <div className="bg-white shadow-md rounded-lg p-8 w-full max-w-md">
           <h1 className="text-2xl font-bold text-center mb-4">Todo List</h1>
