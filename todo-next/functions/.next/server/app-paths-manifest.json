@@ -1,0 +1,13 @@
+{
+  "/_not-found/page": "app/_not-found/page.js",
+  "/api/todos/route": "app/api/todos/route.js",
+  "/api/todos/[id]/route": "app/api/todos/[id]/route.js",
+  "/page": "app/page.js",
+  "/api/user/login/route": "app/api/user/login/route.js",
+  "/profile/page": "app/profile/page.js",
+  "/api/user/signup/route": "app/api/user/signup/route.js",
+  "/[slug]/page": "app/[slug]/page.js",
+  "/signup/page": "app/signup/page.js",
+  "/login/page": "app/login/page.js",
+  "/favicon.ico/route": "app/favicon.ico/route.js"
+}

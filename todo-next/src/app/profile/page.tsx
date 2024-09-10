@@ -10,4 +10,3 @@ function EachProfile() {
 }
 
 export default EachProfile;
-w
