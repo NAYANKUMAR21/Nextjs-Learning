@@ -12,16 +12,17 @@ interface Data {
 }
 const GetTodo = async (id: string) => {
   try {
-    let result = await axios.get('/api/todos/' + id, { withCredentials: true });
-    return result.data;
+    // let result = await axios.get('/api/todos/' + id, { withCredentials: true });
+    const result = 'data';
+    return result;
   } catch (er: any) {
     throw new Error(er.message);
   }
 };
-export default function Home(req: NextResponse) {
+export default function Home() {
   const [selectedTodo, setSelectedTodo] = useState<string | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
-  const [error, setError] = useState<boolean>(false);
+  // const [error, setError] = useState<boolean>(false);
   const [data, setData] = useState<Data[]>([]);
   const [text, setText] = useState<string>('');
 
@@ -41,9 +42,9 @@ export default function Home(req: NextResponse) {
   ): Promise<void> => {
     // make axios post request
     e.preventDefault();
-    let userId = data[0]?.userId;
-    let todoText = text;
-    let isCompleted = false;
+    const userId = data[0]?.userId;
+    const todoText = text;
+    const isCompleted = false;
 
     setLoading(true);
     setData([...data, { id: data.length - 1, todoText, userId, isCompleted }]);
@@ -59,11 +60,12 @@ export default function Home(req: NextResponse) {
     setData(data.filter((ele) => ele.id !== id));
   };
 
-  const handleUpdate = () => {
-    // console.log()
-  };
+  // const handleUpdate = () => {
+  //   console.log('update');
+  // };
   useEffect(() => {
     console.log('inside effect');
+    GetTodo('id');
   }, []);
 
   if (loading) {
@@ -104,7 +106,7 @@ export default function Home(req: NextResponse) {
                 >
                   <span>{ele.todoText}</span>
                 </div>
-                <div className="ml-4">
+                <div className="ml-4" onClick={() => deleteTodo('id')}>
                   <input
                     type="radio"
                     className="form-radio text-purple-600 w-6 h-6" // Makes the radio button bigger

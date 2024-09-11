@@ -4,7 +4,7 @@ import { prisma } from '../../../../../prisma';
 export async function POST(req: NextRequest) {
   try {
     const { username, email, password } = await req.json();
-    let data = await prisma.user.create({
+    const data = await prisma.user.create({
       data: {
         username,
         email,
@@ -22,7 +22,7 @@ export async function POST(req: NextRequest) {
     );
   }
 }
-export async function GET(req: NextRequest) {
+export async function GET() {
   try {
     let data = await prisma.user.findMany();
     return NextResponse.json(

@@ -40,7 +40,7 @@ export async function DELETE(req: NextRequest) {
       );
     }
     // await prisma.$connect();
-    let data = await prisma.todos.delete({
+    const data = await prisma.todos.delete({
       where: {
         id: id,
       },
