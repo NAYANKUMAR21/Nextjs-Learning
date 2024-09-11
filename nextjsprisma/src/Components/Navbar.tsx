@@ -4,9 +4,10 @@ const Navbar = () => {
   return (
     <nav className="bg-gray-800 p-4">
       <div className="container mx-auto flex justify-between items-center">
-        <div className="text-white text-lg font-bold">Checklist</div>
+        <div className="text-white text-lg font-bold">
+          <Link href={'/'}>Checklist</Link>
+        </div>
         <div className="flex space-x-6">
-          <Link href="/">Home</Link>
           <Link href="/docs">Docs</Link>
           <Link href="/price">Price</Link>
           <Link href="/login">Login</Link>

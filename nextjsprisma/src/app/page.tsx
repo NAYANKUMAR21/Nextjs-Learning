@@ -1,4 +1,6 @@
 'use client';
+import axios from 'axios';
+import Spinner5 from '@/Components/Loaders';
 import { NextResponse } from 'next/server';
 import { ChangeEvent, FormEvent, useEffect, useState } from 'react';
 
@@ -8,6 +10,14 @@ interface Data {
   userId: string;
   isCompleted: boolean;
 }
+const GetTodo = async (id: string) => {
+  try {
+    let result = await axios.get('/api/todos/' + id, { withCredentials: true });
+    return result.data;
+  } catch (er: any) {
+    throw new Error(er.message);
+  }
+};
 export default function Home(req: NextResponse) {
   const [selectedTodo, setSelectedTodo] = useState<string | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
@@ -26,7 +36,9 @@ export default function Home(req: NextResponse) {
   const closePopup = () => {
     setSelectedTodo(null); // Closes the popup when clicked outside or on close
   };
-  const handleAddTodo = (e: FormEvent<HTMLFormElement>): void => {
+  const handleAddTodo = async (
+    e: FormEvent<HTMLFormElement>
+  ): Promise<void> => {
     // make axios post request
     e.preventDefault();
     let userId = data[0]?.userId;
@@ -35,6 +47,9 @@ export default function Home(req: NextResponse) {
 
     setLoading(true);
     setData([...data, { id: data.length - 1, todoText, userId, isCompleted }]);
+
+    await axios.post('/api/todos', { todoText, userId });
+
     setLoading(false);
     // make axios post request along with userId
   };
@@ -51,6 +66,9 @@ export default function Home(req: NextResponse) {
     console.log('inside effect');
   }, []);
 
+  if (loading) {
+    return <Spinner5 />;
+  }
   return (
     <div className="min-h-screen bg-gray-900 flex flex-col items-center p-4">
       <form onSubmit={handleAddTodo} className="w-full max-w-sm mt-6">
@@ -71,7 +89,6 @@ export default function Home(req: NextResponse) {
           </button>
         </div>
       </form>
-
       <div className="w-full max-w-sm mt-8">
         {data?.map((ele: Data, index: number) => {
           return (
@@ -98,7 +115,6 @@ export default function Home(req: NextResponse) {
           );
         })}
       </div>
-
       {/* Popup div to display the clicked todo */}
       {selectedTodo && (
         <>
