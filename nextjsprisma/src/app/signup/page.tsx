@@ -2,11 +2,11 @@ import React from 'react';
 
 const Signin = () => {
   return (
-    <section className="bg-gray-800 py-20 dark:bg-dark lg:py-[120px]">
+    <section className="bg-gray-900 py-20 dark:bg-dark lg:py-[120px]">
       <div className="container mx-auto">
         <div className="-mx-4 flex flex-wrap">
           <div className="w-full px-4">
-            <div className="relative mx-auto max-w-[525px] overflow-hidden rounded-lg bg-white px-10 py-16 text-center dark:bg-dark-2 sm:px-12 md:px-[60px]">
+            <div className="relative mx-auto max-w-[525px] overflow-hidden rounded-lg px-10 py-16 text-center dark:bg-dark-2 sm:px-12 md:px-[60px]">
               <div className="mb-10 text-center md:mb-16">
                 <a href="/#" className="mx-auto inline-block max-w-[160px]">
                   <img
@@ -25,14 +25,17 @@ const Signin = () => {
                   placeholder="Password"
                 />
                 <div className="mb-10">
-                  <input
+                  <button className="w-full bg-gray-800 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded-lg focus:outline-none focus:ring focus:ring-gray-600 mb-6">
+                    Sign in
+                  </button>
+                  {/* <input
                     type="submit"
                     value="Sign In"
                     className="bg-blue-500 w-full cursor-pointer rounded-md border border-primary bg-primary px-5 py-3 text-base font-medium text-white transition hover:bg-opacity-90"
-                  />
+                  /> */}
                 </div>
               </form>
-              <p className="mb-6 text-base text-secondary-color dark:text-dark-7 text-black">
+              <p className="mb-6 text-base text-secondary-color dark:text-dark-7 text-white">
                 Connect With
               </p>
               <ul className="-mx-2 mb-12 flex justify-between">
@@ -348,7 +351,7 @@ const InputBox = ({
         type={type}
         placeholder={placeholder}
         name={name}
-        className="text-black w-full rounded-md border border-stroke bg-transparent px-5 py-3 text-base text-body-color outline-none focus:border-primary focus-visible:shadow-none dark:border-dark-3 dark:text-black"
+        className="text-white w-full rounded-md border border-stroke bg-transparent px-5 py-3 text-base text-body-color outline-none focus:border-primary focus-visible:shadow-none dark:border-dark-3 dark:text-white"
       />
     </div>
   );

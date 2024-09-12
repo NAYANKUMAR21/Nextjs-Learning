@@ -16,23 +16,22 @@ datasource db {
 
 
 model User{
-  id String @id @default(auto()) @map("_id") @db.ObjectId
+  id       String @id @default(auto()) @map("_id") @db.ObjectId
   username String @unique
-  email String @unique
+  email    String @unique
   password String 
-  //2. After You have added the 1. point in the Todos you have add the array point as i have added below
   AllTodos Todos[]
+  //2. After You have added the 1. point in the Todos you have add the array point as i have added below
 }
 
 model Todos{
-  id String @id @default(auto()) @map("_id") @db.ObjectId
-  todoText String
+  id          String   @id @default(auto()) @map("_id") @db.ObjectId
+  todoText    String
   //1. This means that There is model called User add a relation to that and place (id) inside the userId feild in Todos
-  author User @relation(fields: [userId], references: [id])
-  userId String @db.ObjectId
-  // 
-  isCompleted Boolean @default(false)
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  author      User     @relation(fields: [userId], references: [id])
+  userId      String   @db.ObjectId
+  isCompleted Boolean  @default(false)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
 
 }

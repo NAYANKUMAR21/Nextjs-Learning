@@ -11,13 +11,17 @@ export async function GET() {
       { message: 'backend Up and running ', data, success: true },
       { status: 200 }
     );
-  } catch (er: any) {
-    return NextResponse.json(
-      { message: er.message, success: false },
-      {
-        status: 500,
-      }
-    );
+  } catch (er: unknown) {
+    if (er instanceof Error) {
+      return NextResponse.json(
+        { message: er.message, success: false },
+        {
+          status: 500,
+        }
+      );
+    } else {
+      throw new Error('Something went wrong');
+    }
   }
 }
 

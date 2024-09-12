@@ -1,7 +1,6 @@
 'use client';
 import axios from 'axios';
 import Spinner5 from '@/Components/Loaders';
-import { NextResponse } from 'next/server';
 import { ChangeEvent, FormEvent, useEffect, useState } from 'react';
 
 interface Data {
@@ -15,8 +14,12 @@ const GetTodo = async (id: string) => {
     // let result = await axios.get('/api/todos/' + id, { withCredentials: true });
     const result = 'data';
     return result;
-  } catch (er: any) {
-    throw new Error(er.message);
+  } catch (er: unknown) {
+    if (er instanceof Error) {
+      throw new Error(er.message);
+    } else {
+      throw new Error('Something went wrong');
+    }
   }
 };
 export default function Home() {
@@ -47,9 +50,12 @@ export default function Home() {
     const isCompleted = false;
 
     setLoading(true);
-    setData([...data, { id: data.length - 1, todoText, userId, isCompleted }]);
+    setData([
+      ...data,
+      { id: userId ? userId : data.length - 1, todoText, userId, isCompleted },
+    ]);
 
-    await axios.post('/api/todos', { todoText, userId });
+    // await axios.post('/api/todos', { todoText, userId });
 
     setLoading(false);
     // make axios post request along with userId
@@ -106,11 +112,11 @@ export default function Home() {
                 >
                   <span>{ele.todoText}</span>
                 </div>
-                <div className="ml-4" onClick={() => deleteTodo('id')}>
-                  <input
-                    type="radio"
-                    className="form-radio text-purple-600 w-6 h-6" // Makes the radio button bigger
-                  />
+                <div className="ml-4">
+                  <div
+                    onClick={() => deleteTodo(ele.id)}
+                    className="w-6 h-6 border-2 border-red-600 rounded-full flex items-center justify-center"
+                  ></div>
                 </div>
               </div>
             </>
@@ -129,20 +135,20 @@ export default function Home() {
               onClick={(e) => e.stopPropagation()} // Prevents closing when clicking inside the popup
             >
               <h2 className="text-lg font-bold mb-4">Todo Details</h2>
-              <p>{selectedTodo}</p>
-
+              {/* <p>{selectedTodo}</p> */}
+              <div className="border-black">
+                <input
+                  type="text"
+                  value={selectedTodo}
+                  className="p-5 text-md"
+                />
+              </div>
               {/* Update button */}
               <button
                 // onClick={() => handleUpdate(selectedTodo)} // Function to handle the update
                 className="mt-4 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-lg mr-10"
               >
                 Update
-              </button>
-              <button
-                // onClick={() => handleUpdate(selectedTodo)} // Function to handle the update
-                className="mt-4 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-lg"
-              >
-                ✔️
               </button>
 
               <button
