@@ -7,7 +7,7 @@ const Navbar = () => {
         <div className="text-white text-lg font-bold">
           <Link href={'/'}>Checklist</Link>
         </div>
-        <div className="flex justify-between border border-white w-2/4">
+        <div className="flex justify-between items-center w-2/4">
           <div>
             <Link href="/docs">Docs</Link>
           </div>
