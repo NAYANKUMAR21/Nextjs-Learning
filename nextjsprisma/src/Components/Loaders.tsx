@@ -10,7 +10,7 @@ export function Spinner5() {
 
 export function CircleLoader() {
   return (
-    <div role="status">
+    <div role="status" className="flex align-center justify-center">
       <svg
         aria-hidden="true"
         className="inline w-8 h-8 text-gray-200 animate-spin animation-duration:500 dark:text-gray-600 fill-gray-600 dark:fill-gray-300"

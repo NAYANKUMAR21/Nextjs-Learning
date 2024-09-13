@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-let count = 0;
+
 export async function middleware(request: NextRequest) {
   const path = request.nextUrl.pathname;
   const isStaticResource = path.startsWith('/_next') || path === '/favicon.ico';

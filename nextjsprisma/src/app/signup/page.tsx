@@ -1,6 +1,7 @@
 'use client';
 import { CircleLoader } from '@/Components/Loaders';
 import axios from 'axios';
+import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import React, { ChangeEvent, FormEvent, useState } from 'react';
 
@@ -68,7 +69,7 @@ const Signin = () => {
             <div className="relative mx-auto max-w-[525px] overflow-hidden rounded-lg px-10 py-16 text-center dark:bg-dark-2 sm:px-12 md:px-[60px]">
               <div className="mb-10 text-center md:mb-16">
                 <a href="/#" className="mx-auto inline-block max-w-[160px]">
-                  <img
+                  <Image
                     src="https://static-00.iconduck.com/assets.00/todoist-icon-2048x2048-6xd8pwo3.png"
                     alt="logo"
                     className="h-10"

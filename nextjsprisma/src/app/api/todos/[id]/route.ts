@@ -1,21 +1,10 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '../../../../../prisma';
-export async function GET(req: NextRequest) {
-  try {
-    
-  } catch (er: any) {
-    return NextResponse.json(
-      { message: er.message, success: false },
-      {
-        status: 500,
-      }
-    );
-  }
-}
 
 export async function DELETE(req: NextRequest) {
   try {
     const id = req.url.split('/').pop();
+
     if (!id) {
       return NextResponse.json(
         { message: 'ID is required', success: false },
@@ -33,12 +22,21 @@ export async function DELETE(req: NextRequest) {
       data,
       success: true,
     });
-  } catch (er: any) {
-    return NextResponse.json(
-      { message: er.message, success: false },
-      {
-        status: 500,
-      }
-    );
+  } catch (er: unknown) {
+    if (er instanceof Error) {
+      return NextResponse.json(
+        { message: er.message, success: false },
+        {
+          status: 500,
+        }
+      );
+    } else {
+      return NextResponse.json(
+        { message: 'Something wrong happened...', success: false },
+        {
+          status: 500,
+        }
+      );
+    }
   }
 }

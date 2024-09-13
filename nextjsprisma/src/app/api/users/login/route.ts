@@ -78,7 +78,7 @@ export async function POST(req: NextRequest) {
 }
 export async function GET() {
   try {
-    let data = await prisma.user.findMany();
+    const data = await prisma.user.findMany();
     return NextResponse.json(
       {
         message: 'Successfull data fetched.. ',
@@ -89,10 +89,30 @@ export async function GET() {
         status: 200,
       }
     );
-  } catch (error: any) {
-    return NextResponse.json(
-      { message: error.message, success: false },
-      { status: 500 }
-    );
+  } catch (er: unknown) {
+    if (
+      er instanceof Error &&
+      er.message.includes('Server selection timeout')
+    ) {
+      return NextResponse.json(
+        {
+          message:
+            'Database connection cannot be established. Server error. Please try again later. ' +
+            er.message,
+          success: false,
+        },
+        { status: 500 }
+      );
+    } else if (er instanceof Error) {
+      return NextResponse.json(
+        { message: er.message, success: false },
+        { status: 500 }
+      );
+    } else {
+      return NextResponse.json(
+        { message: 'Something went wrong...', success: false },
+        { status: 500 }
+      );
+    }
   }
 }
