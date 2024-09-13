@@ -1,25 +1,79 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '../../../../../prisma';
+import argon2 from 'argon2';
+import { getToken } from '@/helpers/getToken';
 
 export async function POST(req: NextRequest) {
   try {
-    const { username, email, password } = await req.json();
-    const data = await prisma.user.create({
-      data: {
+    const { username, password } = await req.json();
+    console.log('Headers: ', req.headers.get('x-coming-from'));
+
+    const data = await prisma.user.findUnique({
+      where: {
         username,
-        email,
-        password,
       },
     });
-    return NextResponse.json(
-      { message: 'User Created', success: true, data },
-      { status: 201 }
+
+    if (!data) {
+      return NextResponse.json(
+        { message: 'User not found', success: false },
+        { status: 404 }
+      );
+    }
+
+    const match = await argon2.verify(data.password, password);
+    if (!match) {
+      return NextResponse.json(
+        { message: 'Wrong password', success: false },
+        { status: 401 }
+      );
+    }
+
+    const token: string = getToken({
+      id: data.id,
+      email: data.email,
+      username: data.username,
+    });
+
+    const response = NextResponse.json(
+      { message: 'User logged in', success: true, data },
+      { status: 200 }
     );
-  } catch (error: any) {
-    return NextResponse.json(
-      { message: error.message, success: false },
-      { status: 500 }
-    );
+    response.cookies.set({
+      name: 'token',
+      value: token,
+      httpOnly: true,
+      maxAge: 60 * 60 * 24,
+    });
+
+    return response;
+
+    // return response;
+  } catch (er: unknown) {
+    if (
+      er instanceof Error &&
+      er.message.includes('Server selection timeout')
+    ) {
+      return NextResponse.json(
+        {
+          message:
+            'Database connection cannot be established. Server error. Please try again later. ' +
+            er.message,
+          success: false,
+        },
+        { status: 500 }
+      );
+    } else if (er instanceof Error) {
+      return NextResponse.json(
+        { message: er.message, success: false },
+        { status: 500 }
+      );
+    } else {
+      return NextResponse.json(
+        { message: 'Something went wrong...', success: false },
+        { status: 500 }
+      );
+    }
   }
 }
 export async function GET() {

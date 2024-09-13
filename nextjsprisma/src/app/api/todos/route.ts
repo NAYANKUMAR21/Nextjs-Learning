@@ -1,11 +1,27 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '../../../../prisma';
 
-export async function GET() {
-  try {
-    // await prisma.$connect();
+import { GetDataFromToken } from '@/helpers/GetDataFromToken';
 
-    let data = await prisma.todos.findMany({});
+export async function GET(req: NextRequest) {
+  try {
+    let token = req.cookies.get('token')?.value || '';
+    console.log('token: ', token);
+    if (!token) {
+      return NextResponse.json(
+        { message: 'Token missing...', success: false },
+        {
+          status: 401,
+        }
+      );
+    }
+    let id = GetDataFromToken(token);
+    console.log(id);
+    const data = await prisma.todos.findMany({
+      where: {
+        userId: id,
+      },
+    });
 
     return NextResponse.json(
       { message: 'backend Up and running ', data, success: true },
@@ -27,8 +43,12 @@ export async function GET() {
 
 export async function POST(req: NextRequest): Promise<NextResponse> {
   try {
+    let token = req.cookies.get('token')?.value || '';
+    let userId = GetDataFromToken(token);
+
     const body = await req.json();
-    const { todoText, userId } = body as { todoText: string; userId: string };
+    const { todoText } = body as { todoText: string };
+    console.log(body, userId, token);
     let storeData = await prisma.todos.create({
       data: {
         todoText,

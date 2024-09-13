@@ -6,13 +6,25 @@ export async function POST(req: NextRequest) {
   try {
     const { username, email, password } = await req.json();
 
+    if (
+      username.trim().length == 0 ||
+      email.trim().length == 0 ||
+      password.trim().length == 0
+    ) {
+      return NextResponse.json(
+        { message: 'All fields are required', success: false },
+        { status: 400 }
+      );
+    }
     const data = await prisma.user.findUnique({
       where: {
         username,
         email,
       },
     });
+
     if (data) {
+      console.log('data', data);
       return NextResponse.json(
         { message: 'User already existed!...', success: false },
         { status: 500 }

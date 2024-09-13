@@ -1,6 +1,65 @@
-import React from 'react';
+'use client';
+import { CircleLoader } from '@/Components/Loaders';
+import axios from 'axios';
+import { useRouter } from 'next/navigation';
+import React, { ChangeEvent, FormEvent, useState } from 'react';
 
+interface CredData {
+  username: string;
+  email: string;
+  password: string;
+}
+interface error {
+  message: string;
+  error: boolean;
+}
 const Signin = () => {
+  const router = useRouter();
+  const [loading, setLoading] = useState<boolean>(false);
+  const [cred, SetCreds] = useState<CredData>({
+    username: '',
+    email: '',
+    password: '',
+  });
+  const [error, setError] = useState<error>({
+    message: '',
+    error: false,
+  });
+  const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
+    setError({ message: '', error: false });
+    setLoading(false);
+    SetCreds({
+      ...cred,
+      [e.target.name]: e.target.value,
+    });
+  };
+  const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    try {
+      console.log(cred);
+      setLoading(true);
+      if (cred.username === '' || cred.email === '' || cred.password === '') {
+        setError({ message: 'All fields are required', error: true });
+        return;
+      }
+      setError({ message: '', error: false });
+      const signupUser = await axios.post('/api/users/signup', cred);
+      setLoading(false);
+      if (signupUser.data.success) {
+        return router.push('/login');
+      } else {
+        setError({ message: signupUser.data.message, error: true });
+        return;
+      }
+    } catch (er: unknown) {
+      setLoading(false);
+      if (er instanceof Error) {
+        setError({ message: er.message, error: true });
+      } else {
+        setError({ message: 'Something went wrong', error: true });
+      }
+    }
+  };
   return (
     <section className="bg-gray-900 py-20 dark:bg-dark lg:py-[120px]">
       <div className="container mx-auto">
@@ -16,17 +75,44 @@ const Signin = () => {
                   />
                 </a>
               </div>
-              <form>
-                <InputBox type="text" name="username" placeholder="username" />
-                <InputBox type="email" name="email" placeholder="Email" />
-                <InputBox
-                  type="password"
-                  name="password"
-                  placeholder="Password"
-                />
+              <form onSubmit={handleSubmit}>
+                <div className="mb-6">
+                  <input
+                    onChange={handleChange}
+                    type={'text'}
+                    placeholder={'Enter username'}
+                    name="username"
+                    value={cred.username}
+                    className="text-white w-full rounded-md border border-stroke bg-transparent px-5 py-3 text-base text-body-color outline-none focus:border-primary focus-visible:shadow-none dark:border-dark-3 dark:text-white"
+                  />
+                </div>
+                <div className="mb-6">
+                  <input
+                    onChange={handleChange}
+                    type={'email'}
+                    value={cred.email}
+                    placeholder={'Enter email'}
+                    name="email"
+                    className="text-white w-full rounded-md border border-stroke bg-transparent px-5 py-3 text-base text-body-color outline-none focus:border-primary focus-visible:shadow-none dark:border-dark-3 dark:text-white"
+                  />
+                </div>
+                <div className="mb-6">
+                  <input
+                    value={cred.password}
+                    onChange={handleChange}
+                    type={'password'}
+                    placeholder={'Enter password'}
+                    name="password"
+                    className="text-white w-full rounded-md border border-stroke bg-transparent px-5 py-3 text-base text-body-color outline-none focus:border-primary focus-visible:shadow-none dark:border-dark-3 dark:text-white"
+                  />
+                </div>
+                {error.error && <p className="text-red-500">{error.message}</p>}
                 <div className="mb-10">
-                  <button className="w-full bg-gray-800 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded-lg focus:outline-none focus:ring focus:ring-gray-600 mb-6">
-                    Sign in
+                  <button
+                    disabled={loading}
+                    className="w-full bg-gray-800 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded-lg focus:outline-none focus:ring focus:ring-gray-600 mb-6"
+                  >
+                    {loading ? <CircleLoader /> : 'Sign in'}
                   </button>
                   {/* <input
                     type="submit"
@@ -335,24 +421,3 @@ const Signin = () => {
 };
 
 export default Signin;
-
-const InputBox = ({
-  type,
-  placeholder,
-  name,
-}: {
-  type: string;
-  placeholder: string;
-  name: string;
-}) => {
-  return (
-    <div className="mb-6">
-      <input
-        type={type}
-        placeholder={placeholder}
-        name={name}
-        className="text-white w-full rounded-md border border-stroke bg-transparent px-5 py-3 text-base text-body-color outline-none focus:border-primary focus-visible:shadow-none dark:border-dark-3 dark:text-white"
-      />
-    </div>
-  );
-};

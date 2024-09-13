@@ -1,7 +1,8 @@
 'use client';
 import axios from 'axios';
-import Spinner5 from '@/Components/Loaders';
+import { Spinner5 } from '@/Components/Loaders';
 import { ChangeEvent, FormEvent, useEffect, useState } from 'react';
+import { useRouter } from 'next/navigation';
 
 interface Data {
   id: string | number;
@@ -9,11 +10,13 @@ interface Data {
   userId: string;
   isCompleted: boolean;
 }
-const GetTodo = async (id: string) => {
+const GetTodo = async () => {
   try {
-    // let result = await axios.get('/api/todos/' + id, { withCredentials: true });
-    const result = 'data';
-    return result;
+    let result = await axios.get('/api/todos/', { withCredentials: true });
+
+    // const result = 'data';
+    console.log(result.data.data);
+    return result.data.data;
   } catch (er: unknown) {
     if (er instanceof Error) {
       throw new Error(er.message);
@@ -23,6 +26,7 @@ const GetTodo = async (id: string) => {
   }
 };
 export default function Home() {
+  const router = useRouter();
   const [selectedTodo, setSelectedTodo] = useState<string | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
   // const [error, setError] = useState<boolean>(false);
@@ -55,7 +59,7 @@ export default function Home() {
       { id: userId ? userId : data.length - 1, todoText, userId, isCompleted },
     ]);
 
-    // await axios.post('/api/todos', { todoText, userId });
+    await axios.post('/api/todos', { todoText }, { withCredentials: true });
 
     setLoading(false);
     // make axios post request along with userId
@@ -69,9 +73,27 @@ export default function Home() {
   // const handleUpdate = () => {
   //   console.log('update');
   // };
+  const handleLogout = async () => {
+    try {
+      await axios.get('/api/users/logout', { withCredentials: true });
+      return router.push('/login');
+    } catch (er: unknown) {
+      if (er instanceof Error) {
+        console.log(er.message);
+      } else {
+        console.log('Something wrong happened....');
+      }
+    }
+  };
   useEffect(() => {
     console.log('inside effect');
-    GetTodo('id');
+    setLoading(true);
+    GetTodo()
+      .then((data) => {
+        setData(data);
+      })
+      .catch((er) => console.log(er.message));
+    setLoading(false);
   }, []);
 
   if (loading) {
@@ -79,6 +101,14 @@ export default function Home() {
   }
   return (
     <div className="min-h-screen bg-gray-900 flex flex-col items-center p-4">
+      <div className="flex justify-start w-full">
+        <button
+          onClick={handleLogout}
+          className="bg-red-500 hover:bg-blue-400 text-white font-bold py-2 px-4 rounded"
+        >
+          Logout
+        </button>
+      </div>
       <form onSubmit={handleAddTodo} className="w-full max-w-sm mt-6">
         <div className="mb-4">
           <label htmlFor="" className="block text-white text-lg mb-2">
@@ -87,7 +117,7 @@ export default function Home() {
           <input
             type="text"
             onChange={handleReadTodo}
-            className="w-full px-4 py-2 text-black rounded-lg shadow-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="bg-gray-700 border border-gray-600 w-full px-4 py-2 text-white rounded-lg shadow-md focus:outline-none focus:ring-2 focus:ring-blue-500"
             placeholder="Add your todo"
           />
         </div>
@@ -100,7 +130,7 @@ export default function Home() {
       <div className="w-full max-w-sm mt-8">
         {data?.map((ele: Data, index: number) => {
           return (
-            <>
+            <div key={index}>
               <div
                 key={index}
                 className="bg-gradient-to-r bg-slate-50  text-black p-4 my-2 rounded-lg shadow-md cursor-pointer transition-transform transform hover:scale-105 flex justify-between items-center border border-black"
@@ -119,7 +149,7 @@ export default function Home() {
                   ></div>
                 </div>
               </div>
-            </>
+            </div>
           );
         })}
       </div>
