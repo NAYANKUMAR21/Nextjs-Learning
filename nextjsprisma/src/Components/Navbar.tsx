@@ -8,10 +8,18 @@ const Navbar = () => {
           <Link href={'/'}>Checklist</Link>
         </div>
         <div className="flex space-x-6">
-          <Link href="/docs">Docs</Link>
-          <Link href="/price">Price</Link>
-          <Link href="/login">Login</Link>
-          <Link href="/newsletter">News Letter</Link>
+          <div>
+            <Link href="/docs">Docs</Link>
+          </div>
+          <div>
+            <Link href="/price">Price</Link>
+          </div>
+          <div>
+            <Link href="/login">Login</Link>
+          </div>
+          <div>
+            <Link href="/newsletter">News Letter</Link>
+          </div>
         </div>
         <div>
           <Link href={'/signup'}>
