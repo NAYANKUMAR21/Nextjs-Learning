@@ -1,10 +1,15 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '../../../../../prisma';
 
-export async function DELETE(req: NextRequest) {
+export async function DELETE(
+  req: NextRequest,
+  { params }: { params: { id: string } }
+) {
   try {
-    const id = req.url.split('/').pop();
+    console.log(params);
 
+    const id = params.id || req.url.trim().split('/').pop();
+    
     if (!id) {
       return NextResponse.json(
         { message: 'ID is required', success: false },
